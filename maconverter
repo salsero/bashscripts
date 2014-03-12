@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# Function: MAC Address conversion tool
+# Author:   ricardo.ferreira@elephanttalk.com
+#
+# Usage example: macconvert <MAC_ADDRESS>
+# Input in any format
+# Out put in all formats
+# Format IEEE802 LC (:)  00:50:56:91:6a:77
+# Format IEEE802 UC (:)  00:50:56:91:6A:77
+# Format IEEE802 LC (-)  00-50-56-91-6a-77
+# Format IEEE802 UC (-)  00-50-56-91-6A-77
+# Format Cisco LC (.)   0050.5691.6a77
+# Format Cisco UC (.)   0050.5691.6A77
+
+
+#!/bin/bash
+#strip characters
+mac=`echo $1 | sed 's/://g ; s/-//g ; s/\.//g'`
+#lower case by default
+mac=`echo $mac | awk '{print tolower($0)}'`
+
+
+#### code to print multiple formats ####
+##nn:nn:nn:nn:nn:nn
+output=`echo $mac | sed -e 's#\(.\{2\}\)\(.*\)#\1:\2#g ; s#\(.\{5\}\)\(.*\)#\1:\2#g ; s#\(.\{8\}\)\(.*\)#\1:\2#g ; s#\(.\{11\}\)\(.*\)#\1:\2#g ; s#\(.\{14\}\)\(.*\)#\1:\2#g' `
+echo "Format IEEE802 LC (:)  $output"
+#upper format
+output=` echo $output | awk '{print toupper($0)}'`
+echo "Format IEEE802 UC (:)  $output"
+
+##nn-nn-nn-nn-nn-nn
+output=`echo $mac | sed -e 's#\(.\{2\}\)\(.*\)#\1-\2#g ; s#\(.\{5\}\)\(.*\)#\1-\2#g ; s#\(.\{8\}\)\(.*\)#\1-\2#g ; s#\(.\{11\}\)\(.*\)#\1-\2#g ; s#\(.\{14\}\)\(.*\)#\1-\2#g' `
+echo "Format IEEE802 LC (-)  $output"
+#upper format
+output=` echo $output | awk '{print toupper($0)}'`
+echo "Format IEEE802 UC (-)  $output"
+
+##nnnn.nnnn.nnnn
+output=`echo $mac | sed -e 's#\(.\{4\}\)\(.*\)#\1.\2#g ; s#\(.\{9\}\)\(.*\)#\1.\2#g' `
+echo "Format Cisco LC (.)    $output"
+output=` echo $output | awk '{print toupper($0)}'`
+echo "Format Cisco UC (.)    $output"
